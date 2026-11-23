@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高流量氧氣鼻導管（HFNC）原理與臨床應用懶人包</title>
+    <style>
+        :root {
+            --bg-dark: #0b1120;
+            --card-bg: #1e293b;
+            --card-sub: #0f172a;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --green: #10b981;
+            --green-bg: rgba(16, 185, 129, 0.12);
+            --yellow: #f59e0b;
+            --yellow-bg: rgba(245, 158, 11, 0.12);
+            --red: #ef4444;
+            --red-bg: rgba(239, 68, 68, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 頂部進度條 */
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background: #1e293b;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0284c7, #38bdf8);
+            width: 0%;
+            transition: width 0.35s ease;
+        }
+
+        /* 投影片主舞台 */
+        .stage {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1040px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            animation: slideFade 0.35s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideFade {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 標籤與標題排版 */
+        .tag {
+            display: inline-block;
+            background: var(--accent-glow);
+            color: var(--accent);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 0.3rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.6rem;
+            line-height: 1.25;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-box {
+            background: var(--card-sub);
+            border-left: 4px solid var(--accent);
+            padding: 1.1rem 1.4rem;
+            border-radius: 0 12px 12px 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin-top: 1rem;
+        }
+
+        /* 網格佈局 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+        }
+
+        .info-card {
+            background: var(--card-sub);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.35rem;
+        }
+
+        .info-card h3 {
+            color: var(--accent);
+            font-size: 1.15rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .info-card p {
+            color: #cbd5e1;
+            font-size: 0.98rem;
+            line-height: 1.6;
+        }
+
+        /* 紅綠燈卡片 */
+        .card-green { border-color: rgba(16, 185, 129, 0.4); background: var(--green-bg); }
+        .card-green h3 { color: var(--green); }
+        .card-yellow { border-color: rgba(245, 158, 11, 0.4); background: var(--yellow-bg); }
+        .card-yellow h3 { color: var(--yellow); }
+        .card-red { border-color: rgba(239, 68, 68, 0.4); background: var(--red-bg); }
+        .card-red h3 { color: var(--red); }
+
+        ul.clean-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        ul.clean-list li {
+            font-size: 1.02rem;
+            line-height: 1.55;
+            color: #e2e8f0;
+            padding-left: 1.4rem;
+            position: relative;
+        }
+
+        ul.clean-list li::before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .card-green ul.clean-list li::before { color: var(--green); }
+        .card-red ul.clean-list li::before { color: var(--red); }
+
+        /* 步驟流程徽章 */
+        .step-num {
+            display: inline-block;
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 0.2rem 0.65rem;
+            border-radius: 6px;
+            margin-bottom: 0.6rem;
+        }
+
+        .metric-big {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0.4rem 0;
+        }
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.98rem;
+        }
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background: var(--card-sub);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* 互動計算機樣式 */
+        .calc-box {
+            background: var(--card-sub);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .input-group {
+            margin-bottom: 0.9rem;
+        }
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: #fff;
+            font-size: 1rem;
+        }
+        .result-panel {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #131c31;
+        }
+        .rox-score {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0.5rem 0;
+        }
+
+        /* 底部導覽列 */
+        .footer-nav {
+            background: #060a14;
+            border-top: 1px solid var(--border-color);
+            padding: 0.9rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        button.nav-btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        button.nav-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .calc-box { grid-template-columns: 1fr; }
+            .slide { padding: 1.5rem; }
+            h1 { font-size: 1.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="stage">
+        <!-- 第 1 頁：封面 -->
+        <section class="slide active">
+            <span class="tag">LLM Wiki 知識庫教學簡報</span>
+            <h1>高流量氧氣鼻導管（HFNC）<br>原理、臨床應用與脫離指標懶人包</h1>
+            <p class="subtitle">從生理機制、開機設定、安全預警到順利退場的全流程指南</p>
+            <div class="highlight-box">
+                💡 <strong>一句話秒懂核心概念：</strong><br>
+                用「溫暖濕潤的高速氣流」把呼吸道廢氣沖走、溫和撐開肺泡，讓喘不過氣的病人穩定吸到足量純氧。
+            </div>
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; color: var(--text-muted); font-size: 0.9rem;">
+                <span>📚 知識來源：LLM Wiki（5 篇結構化臨床指引）</span>
+                <span>⌨️ 操作提示：支援鍵盤 ← / → 方向鍵翻頁</span>
+            </div>
+        </section>
+
+        <!-- 第 2 頁：四大核心生理機制 -->
+        <section class="slide">
+            <span class="tag">01 / 核心原理</span>
+            <h2>為什麼傳統氧氣不夠用？HFNC 四大生理機制</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.2rem;">喘氣病人的吸氣速度極快（30–60 L/min），傳統鼻導管流速太慢會混入大量室內空氣，導致實際吸到的氧氣被嚴重稀釋。</p>
+            <div class="grid-2">
+                <div class="info-card">
+                    <h3>1. 滿足超快吸氣速度（精準給氧）</h3>
+                    <p>最高可提供 <strong>60 L/min</strong> 氣流，直接追上病人喘氣的吸氣速度，杜絕室內空氣混入，確保設定的氧氣濃度（FiO₂）精準送達肺部。</p>
+                </div>
+                <div class="info-card">
+                    <h3>2. 沖洗上呼吸道廢氣（Dead Space）</h3>
+                    <p>像用持續的微風把鼻咽部殘留的<strong>二氧化碳（CO₂）</strong>吹走，減少廢氣重複吸入，直接減輕病人呼吸肌肉的費力程度。</p>
+                </div>
+                <div class="info-card">
+                    <h3>3. 溫和撐開肺泡（低度 PEEP 效應）</h3>
+                    <p>高速氣流在閉口呼吸時會產生約 <strong>2–5 cmH₂O</strong> 微幅氣墊正壓，防止肺泡在吐氣時扁掉塌陷，提升換氣效率。</p>
+                </div>
+                <div class="info-card">
+                    <h3>4. 37°C 恆溫加濕護纖毛</h3>
+                    <p>模擬人體呼吸道最佳環境（<strong>37°C、100% 相對濕度</strong>），避免氣道乾燥結痂，讓痰液保持濕潤好咳出。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第 3 頁：適應症與禁忌症 -->
+        <section class="slide">
+            <span class="tag">02 / 臨床篩選</span>
+            <h2>誰適合用？誰絕對不能用？（臨床紅綠燈）</h2>
+            <div class="grid-2">
+                <div class="info-card card-green">
+                    <h3>🟢 最適合使用（綠燈推薦）</h3>
+                    <ul class="clean-list">
+                        <li><strong>單純缺氧（第一型急性呼吸衰竭）</strong>：如肺炎、急性肺損傷引起的缺氧，可顯著降低氣管插管率。</li>
+                        <li><strong>拔管後的保護傘</strong>：高風險病人剛脫離呼吸器拔管時預防性使用，避免「喘不過氣又重插管」。</li>
+                        <li><strong>特殊醫療處置支援</strong>：插管前預給氧、支氣管鏡檢查維持血氧，或拒絕插管（DNI）病人的舒適照護。</li>
+                    </ul>
+                </div>
+                <div class="info-card card-red">
+                    <h3>🔴 絕對禁用與高度警戒（紅燈禁區）</h3>
+                    <ul class="clean-list">
+                        <li><strong>昏迷無法保護呼吸道（GCS ≤ 8 分）</strong>：病人無法自己吞口水，極易嗆咳引發吸入性肺炎，應直接插管。</li>
+                        <li><strong>未引流的氣胸</strong>：低度正壓仍可能讓漏氣惡化為致命的「張力性氣胸」。</li>
+                        <li><strong>嚴重二氧化碳酸中毒（pH &lt; 7.25）</strong>：清除 CO₂ 能力有限，硬用會延誤無創呼吸器（NIV）或插管時機。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="highlight-box">
+                ⚠️ <strong>臨床底線提醒：</strong>HFNC 不是密閉式正壓呼吸器，病人必須維持清醒且能自主呼吸才能使用。
+            </div>
+        </section>
+
+        <!-- 第 4 頁：開機設定三步驟 -->
+        <section class="slide">
+            <span class="tag">03 / 操作指南</span>
+            <h2>開機設定三步驟（先保風速、再調氧濃）</h2>
+            <div class="highlight-box" style="margin-top: 0; margin-bottom: 1.3rem; border-left-color: var(--yellow);">
+                📏 <strong>開機前黃金法則：鼻塞外徑必須 &lt; 鼻孔內徑的 50%</strong><br>
+                千萬不能塞滿鼻孔！必須留出空隙讓病人順利吐氣，才能把廢氣沖出來並避免氣道壓力過高。
+            </div>
+            <div class="grid-3">
+                <div class="info-card">
+                    <span class="step-num">STEP 1：先設流速</span>
+                    <h3>氣體流速（Flow）</h3>
+                    <div class="metric-big">30–40 L/min</div>
+                    <p>很喘（呼吸 &gt; 30 次/分）可直接從 <strong>40–50 L/min</strong> 起跳（最高 60），先滿足吸氣速度、降低呼吸費力。</p>
+                </div>
+                <div class="info-card">
+                    <span class="step-num">STEP 2：再調氧濃</span>
+                    <h3>氧氣濃度（FiO₂）</h3>
+                    <div class="metric-big">0.40 – 0.60</div>
+                    <p>依血氧機微調濃度：<br>• 一般人目標：<strong>SpO₂ 92%–96%</strong><br>• 慢性肺病（COPD）：<strong>88%–92%</strong></p>
+                </div>
+                <div class="info-card">
+                    <span class="step-num">STEP 3：兼顧溫度</span>
+                    <h3>加溫加濕（Temp）</h3>
+                    <div class="metric-big">37°C（標準）</div>
+                    <p>最保護氣管纖毛的溫度；若病人剛戴上喊「太熱、悶喘」，可先調降至 <strong>34°C</strong>，適應後再調回。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第 5 頁：療效評估與失敗預警 ROX Index -->
+        <section class="slide">
+            <span class="tag">04 / 安全煞車系統</span>
+            <h2>療效評估：ROX Index 防止「延誤插管」</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                公式：<strong>ROX = (血氧 SpO₂ ÷ 氧氣濃度 FiO₂) ÷ 每分鐘呼吸次數</strong>
+                ｜ 範例：血氧 95% ÷ 0.5 氧氣 ÷ 喘 25 下 = <strong>7.6（安全）</strong>
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>評估時間點</th>
+                        <th style="color: var(--red);">🔴 危險紅燈（建議插管）</th>
+                        <th style="color: var(--yellow);">🟡 警告黃燈（調高流速重測）</th>
+                        <th style="color: var(--green);">🟢 安全綠燈（維持治療）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>治療後第 2 小時</strong></td>
+                        <td style="color: var(--red); font-weight: bold;">&lt; 2.85</td>
+                        <td>2.85 – 4.87（30–60 分鐘內重測）</td>
+                        <td style="color: var(--green); font-weight: bold;">≥ 4.88</td>
+                    </tr>
+                    <tr>
+                        <td><strong>治療後第 6 小時</strong></td>
+                        <td style="color: var(--red); font-weight: bold;">&lt; 3.47</td>
+                        <td>3.47 – 4.87（30–60 分鐘內重測）</td>
+                        <td style="color: var(--green); font-weight: bold;">≥ 4.88</td>
+                    </tr>
+                    <tr>
+                        <td><strong>治療後第 12 小時</strong></td>
+                        <td style="color: var(--red); font-weight: bold;">&lt; 3.85</td>
+                        <td>3.85 – 4.87（30–60 分鐘內重測）</td>
+                        <td style="color: var(--green); font-weight: bold;">≥ 4.88</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="highlight-box" style="border-left-color: var(--red);">
+                🚨 <strong>防呆陷阱：</strong>就算血氧有 95%，但若開到 90% 純氧且每分鐘喘 35 下（ROX 僅 <strong>3.01</strong>），其實已瀕臨失敗邊緣！若黃燈重測未改善，必須果斷插管。
+            </div>
+        </section>
+
+        <!-- 第 6 頁：脫離 Weaning 流程 -->
+        <section class="slide">
+            <span class="tag">05 / 安全退場</span>
+            <h2>脫離（Weaning）兩階段：先降氧濃、再降風速</h2>
+            <div class="highlight-box" style="margin-top: 0; margin-bottom: 1.25rem; border-left-color: var(--green);">
+                ✅ <strong>啟動退場的四個綠燈條件：</strong>意識清楚 ＋ 血壓穩定 ＋ 每分鐘呼吸 ≤ 25 下 ＋ <strong>ROX ≥ 4.88 穩定維持 12–24 小時</strong>。
+            </div>
+            <div class="grid-3">
+                <div class="info-card">
+                    <span class="step-num">第一階段</span>
+                    <h3>先降氧氣濃度（FiO₂）</h3>
+                    <p><strong>保留原流速不變</strong>（繼續撐住肺泡），每次下調 0.05–0.10，直到 <strong>FiO₂ ≤ 0.40</strong> 且血氧維持達標。</p>
+                </div>
+                <div class="info-card">
+                    <span class="step-num">第二階段</span>
+                    <h3>再降氣體流速（Flow）</h3>
+                    <p>氧濃達標後，每 2–4 小時調降 5–10 L/min，逐步降至 <strong>Flow ≤ 15–20 L/min</strong>。</p>
+                </div>
+                <div class="info-card card-green">
+                    <span class="step-num" style="background: var(--green);">畢業銜接</span>
+                    <h3>安全撤除標準</h3>
+                    <p>低流速穩定 <strong>1–2 小時</strong>後即可拆除，改接一般鼻導管（2–4 L/min）。若中途變喘（RR &gt; 30），立刻退回上一階！</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第 7 頁：互動式 ROX Index 計算機 -->
+        <section class="slide">
+            <span class="tag">互動實戰演練</span>
+            <h2>隨堂測驗：臨床 ROX Index 即時判讀機</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.2rem;">試著調整下方病人的生命徵象數值，體驗臨床上如何透過指標決定「繼續治療」或「緊急插管」：</p>
+            <div class="calc-box">
+                <div>
+                    <div class="input-group">
+                        <label>評估時間點（治療後小時）</label>
+                        <select id="calcTime" onchange="calculateROX()">
+                            <option value="2">治療後第 2 小時（紅燈門檻 &lt; 2.85）</option>
+                            <option value="6">治療後第 6 小時（紅燈門檻 &lt; 3.47）</option>
+                            <option value="12">治療後第 12 小時（紅燈門檻 &lt; 3.85）</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>血氧飽和度 SpO₂（%）</label>
+                        <input type="number" id="calcSpo2" value="94" min="50" max="100" oninput="calculateROX()">
+                    </div>
+                    <div class="input-group">
+                        <label>氧氣濃度 FiO₂（0.21 ~ 1.00）</label>
+                        <input type="number" id="calcFio2" value="0.60" step="0.05" min="0.21" max="1.0" oninput="calculateROX()">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>每分鐘呼吸次數 RR（次/分）</label>
+                        <input type="number" id="calcRr" value="28" min="8" max="60" oninput="calculateROX()">
+                    </div>
+                </div>
+
+                <div class="result-panel" id="resultPanel">
+                    <div style="color: var(--text-muted); font-size: 0.95rem;">計算結果（ROX Index）</div>
+                    <div class="rox-score" id="roxValue">5.59</div>
+                    <div id="roxBadge" style="font-weight: 700; font-size: 1.15rem; margin-bottom: 0.75rem;">🟢 安全綠燈（治療有效）</div>
+                    <p id="roxAdvice" style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.5;">
+                        分數大於等於 4.88，代表病人氧合效率良好，建議維持目前 HFNC 設定並持續常規監測。
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="footer-nav">
+        <div>HFNC 臨床知識庫教學簡報</div>
+        <div id="pageIndicator" style="font-weight: 600; color: var(--text-main);">1 / 7</div>
+        <div class="nav-btns">
+            <button class="nav-btn" onclick="changeSlide(-1)">← 上一頁</button>
+            <button class="nav-btn" onclick="changeSlide(1)">下一頁 →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentIdx = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const pageIndicator = document.getElementById('pageIndicator');
+
+        function renderSlide() {
+            slides.forEach((slide, idx) => {
+                slide.classList.toggle('active', idx === currentIdx);
+            });
+            const pct = ((currentIdx + 1) / slides.length) * 100;
+            progressBar.style.width = pct + '%';
+            pageIndicator.textContent = `${currentIdx + 1} / ${slides.length}`;
+        }
+
+        function changeSlide(step) {
+            const next = currentIdx + step;
+            if (next >= 0 && next < slides.length) {
+                currentIdx = next;
+                renderSlide();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (['INPUT', 'SELECT'].includes(document.activeElement.tagName)) return;
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            }
+        });
+
+        function calculateROX() {
+            const time = parseInt(document.getElementById('calcTime').value);
+            const spo2 = parseFloat(document.getElementById('calcSpo2').value) || 0;
+            const fio2 = parseFloat(document.getElementById('calcFio2').value) || 0.21;
+            const rr = parseFloat(document.getElementById('calcRr').value) || 1;
+
+            const rox = (spo2 / fio2) / rr;
+            const roxEl = document.getElementById('roxValue');
+            const badgeEl = document.getElementById('roxBadge');
+            const adviceEl = document.getElementById('roxAdvice');
+            const panelEl = document.getElementById('resultPanel');
+
+            roxEl.textContent = rox.toFixed(2);
+
+            let redThreshold = 2.85;
+            if (time === 6) redThreshold = 3.47;
+            if (time === 12) redThreshold = 3.85;
+
+            if (rox >= 4.88) {
+                roxEl.style.color = 'var(--green)';
+                badgeEl.style.color = 'var(--green)';
+                badgeEl.textContent = '🟢 安全綠燈（治療有效）';
+                panelEl.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+                adviceEl.textContent = '分數 ≥ 4.88，代表病人氧合效率良好，建議維持目前 HFNC 設定並持續常規監測。';
+            } else if (rox < redThreshold) {
+                roxEl.style.color = 'var(--red)';
+                badgeEl.style.color = 'var(--red)';
+                badgeEl.textContent = '🔴 危險紅燈（高失敗風險）';
+                panelEl.style.borderColor = 'rgba(239, 68, 68, 0.6)';
+                adviceEl.textContent = `第 ${time} 小時分數低於 ${redThreshold}，治療失敗風險極高！請立即評估氣管內插管，切勿拖延。`;
+            } else {
+                roxEl.style.color = 'var(--yellow)';
+                badgeEl.style.color = 'var(--yellow)';
+                badgeEl.textContent = '🟡 警告黃燈（灰色地帶）';
+                panelEl.style.borderColor = 'rgba(245, 158, 11, 0.6)';
+                adviceEl.textContent = '處於臨界觀察區！請立刻調高流速（Flow）優化支持，並於 30–60 分鐘內重新計算 ROX Index。';
+            }
+        }
+
+        renderSlide();
+        calculateROX();
+    </script>
+</body>
+</html>
